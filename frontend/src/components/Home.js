@@ -9,8 +9,13 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import ApexChart from './ApexChart';
 import Stack from '@mui/material/Stack';
-
+import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
+// import { UserState } from '../Context/UserProvider';
 function Home() {
+  // const { user } = UserState();
+  // console.log(user);
+  const navigate = useNavigate();
   const [data, setData] = useState();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -45,6 +50,11 @@ function Home() {
 
   useEffect(() => {
     getAllData();
+    const userInfo = localStorage.getItem('userInfo');
+    console.log(userInfo);
+    if (!userInfo) {
+      navigate('/');
+    }
   }, []);
 
   function handleSubmit(event) {
@@ -69,85 +79,90 @@ function Home() {
     return `${year}-${formattedMonth}-${formattedDay}`;
   }
   return (
-    <Stack
-      sx={{
-        marginLeft: { md: '70px', sm: '20px', xs: '10px' },
-        marginRight: { md: '70px', sm: '20px', xs: '10px' },
-        gap: 10,
-      }}
-    >
-      <Box
+    <>
+      <Navbar logout={true} />
+
+      <Stack
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginLeft: { md: '30px', sm: '20px', xs: '10px' },
-          marginRight: { md: '30px', sm: '20px', xs: '10px' },
+          marginTop: '30px',
+          marginLeft: { md: '70px', sm: '20px', xs: '10px' },
+          marginRight: { md: '70px', sm: '20px', xs: '10px' },
+          gap: 10,
         }}
       >
         <Box
-          component="form"
           sx={{
-            // '& .MuiTextField-root': { m: 1, width: '25ch' },
             display: 'flex',
             justifyContent: 'center',
-            flexDirection: {
-              xl: 'row',
-              lg: 'row',
-              md: 'row',
-              sm: 'column',
-              xs: 'column',
-            },
-            width: { sm: '100%', xs: '100%' },
-
-            gap: 3,
+            marginLeft: { md: '30px', sm: '20px', xs: '10px' },
+            marginRight: { md: '30px', sm: '20px', xs: '10px' },
           }}
-          noValidate
-          onSubmit={handleSubmit}
-          autoComplete="on"
         >
-          <DatePicker
-            value={startDate}
-            onChange={(e) => {
-              const temp = e.$y + '-' + (e.$M + 1) + '-' + e.$D;
-              const ltemp = addLeadingZeros(temp);
-              setStartDate(ltemp);
-            }}
-            format="YYYY-MM-DD"
-            label="Start Date"
-          />
+          <Box
+            component="form"
+            sx={{
+              // '& .MuiTextField-root': { m: 1, width: '25ch' },
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: {
+                xl: 'row',
+                lg: 'row',
+                md: 'row',
+                sm: 'column',
+                xs: 'column',
+              },
+              width: { sm: '100%', xs: '100%' },
 
-          <DatePicker
-            value={endDate}
-            onChange={(e) => {
-              const temp = e.$y + '-' + (e.$M + 1) + '-' + e.$D;
-              const ltemp = addLeadingZeros(temp);
-              setEndDate(ltemp);
+              gap: 3,
             }}
-            format="YYYY-MM-DD"
-            label="End Date"
-          />
+            noValidate
+            onSubmit={handleSubmit}
+            autoComplete="on"
+          >
+            <DatePicker
+              value={startDate}
+              onChange={(e) => {
+                const temp = e.$y + '-' + (e.$M + 1) + '-' + e.$D;
+                const ltemp = addLeadingZeros(temp);
+                setStartDate(ltemp);
+              }}
+              format="YYYY-MM-DD"
+              label="Start Date"
+            />
 
-          <Box sx={{ minWidth: 250 }}>
-            <FormControl fullWidth>
-              <InputLabel>Symbol</InputLabel>
-              <Select value={symbol} onChange={handleChange}>
-                <MenuItem value={'NIFTY 50'}>NIFTY 50</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box display="flex" justifyContent="center">
-            <Button
-              variant="contained"
-              type="submit"
-              sx={{ p: -1, height: 55, width: '100%' }}
-            >
-              Submit
-            </Button>
+            <DatePicker
+              value={endDate}
+              onChange={(e) => {
+                const temp = e.$y + '-' + (e.$M + 1) + '-' + e.$D;
+                const ltemp = addLeadingZeros(temp);
+                setEndDate(ltemp);
+              }}
+              format="YYYY-MM-DD"
+              label="End Date"
+            />
+
+            <Box sx={{ minWidth: 250 }}>
+              <FormControl fullWidth>
+                <InputLabel>Symbol</InputLabel>
+                <Select value={symbol} onChange={handleChange}>
+                  <MenuItem value={'NIFTY 50'}>NIFTY 50</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{ p: -1, height: 55, width: '100%' }}
+              >
+                Submit
+              </Button>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      {data ? <ApexChart data={data} /> : <div>Lodaing..</div>}
-    </Stack>
+        {data ? <ApexChart data={data} /> : <div>Lodaing..</div>}
+      </Stack>
+    </>
   );
 }
 

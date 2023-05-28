@@ -28,6 +28,7 @@ const ApexChart = ({ data }) => {
       uniqueDates[date] = item;
     }
   });
+
   data = Object.values(uniqueDates);
   console.log('apex', data);
   const prices = data.map((obj) => obj.price);
